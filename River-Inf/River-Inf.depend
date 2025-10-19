@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1760915815 source:d:\riverinf\river-inf\river-inf\untitled4.c
+	"raylib.h"
+	<stdlib.h>
+
+1760913030 source:d:\riverinf\river-inf\river-inf\test.c
+	"raylib.h"
+
