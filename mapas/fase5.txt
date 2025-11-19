@@ -1,0 +1,40 @@
+TTTTT       TTTTTTTTTTTT
+T    N   X      N    TTT
+T       N    X       TTT
+T   X        N       TTT
+T        N        X  TTT
+T   N             N  TTT
+T         F          TTT
+T         U          TTT
+T         E          TTT
+T         L          TTT
+T     X      N       TTT
+T         X          TTT
+T   N             X  TTT
+T       N     N      TTT
+T  X          N      TTT
+T      X        X    TTT
+T   N             N  TTT
+T       X       N    TTT
+T     A              TTT
+T                    TTT
+TTTTT       X    TTTTTTT
+T                    TTT
+T      X             TTT
+T      F        N    TTT
+T   N  U             TTT
+T      E    X        TTT
+T      L             TTT
+T                    TTT
+T  N     P     X     TTT
+T                    TTT
+T       N            TTT
+T               N    TTT
+T                    TTT
+T    X               TTT
+T             X      TTT
+T                    TTT
+T    N               TTT
+T                    TTT
+T        A           TTT
+T                    TTT
