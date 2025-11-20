@@ -2,13 +2,13 @@ TTTTT            TTTTTTT
 T                    TTT
 T      X             TTT
 T               N    TTT
-T   N                TTT
-T           X        TTT
-T                    TTT
-T  F                 TTT
-T  U     P           TTT
-T  E                 TTT
-T  L                 TTT
+T   N               TTTT
+T           X      TTTTT
+T                 TTPTTT
+T  F             TTTPTTT
+T  U              TPPTTT
+T  E               TPTTT
+T  L                TTTT
 T               N    TTT
 T                    TTT
 T    X               TTT

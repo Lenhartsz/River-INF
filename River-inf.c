@@ -32,16 +32,16 @@ typedef struct {
 } Bala;
 
 typedef struct {
-    float x, y;        // posi√ß√£o em pixels (centro/alinhado quando criado)
+    float x, y;        // posiÁ„o em pixels (centro/alinhado quando criado)
     bool ativa;
     float tempo;      // tempo passado
-    float duracao;    // dura√ß√£o total da anima√ß√£o
+    float duracao;    // duraÁ„o total da animaÁ„o
     int frameAtual;
     int totalFrames;
 } Explosao;
 
 
-// globals para sprite de explos√£o (configurados em main)
+// globals para sprite de explos„o (configurados em main)
 static int g_expl_totalFrames = 0;
 static int g_expl_frameW = 0;
 static int g_expl_spriteH = 0;
@@ -164,7 +164,7 @@ void atualizarRanking(Jogador ranking[MAX_RANK], const char *nome, int pontos)
 
 
 //-----------------------------------------------------
-// COLIS√ïES
+// COLIS’ES
 //-----------------------------------------------------
 bool vaiColidir(char mapa[LINHAS][COLUNAS+1], float px, float py)
 {
@@ -182,7 +182,7 @@ bool vaiColidir(char mapa[LINHAS][COLUNAS+1], float px, float py)
 
 
 //-----------------------------------------------------
-// Explos√µes: fun√ß√£o C para criar (posi√ß√£o em pixels)
+// Explosıes: funÁ„o C para criar (posiÁ„o em pixels)
 //-----------------------------------------------------
 void criarExplosao(Explosao explosoes[], int maxExpl, float x, float y, float duracao, int totalFrames)
 {
@@ -209,12 +209,6 @@ int main()
     InitWindow(COLUNAS*TILE, LINHAS*TILE, "River-Inf");
     SetTargetFPS(60);
     SetExitKey(KEY_NULL);
-    InitAudioDevice();
-
-    Sound somExplosao = LoadSound("sons/explosaosom.wav");
-    Sound somAviao    = LoadSound("sons/aviaosom.wav");
-    Sound somTiro     = LoadSound("sons/tirosom.wav");
-
 
     Jogador ranking[MAX_RANK];
     carregarRanking(ranking, "ranking.txt");
@@ -250,9 +244,9 @@ int main()
     Texture2D aviao_direita = LoadTexture("sprites/aviao_direita.png");
     Texture2D aviao_esquerda= LoadTexture("sprites/aviao_esquerda.png");
 
-    // explos√£o sprite (sprite sheet horizontal)
+    // explos„o sprite (sprite sheet horizontal)
     Texture2D explosaoSprite = LoadTexture("sprites/explosion.png");
-    g_expl_totalFrames = 8; // ajuste caso sua sprite tenha outro n√∫mero de frames
+    g_expl_totalFrames = 8; // ajuste caso sua sprite tenha outro n˙mero de frames
     if (g_expl_totalFrames <= 0) g_expl_totalFrames = 1;
     g_expl_frameW = (int)(explosaoSprite.width / g_expl_totalFrames);
     g_expl_spriteH = explosaoSprite.height;
@@ -264,7 +258,7 @@ int main()
     float timerTiro = 0.0f;
     float velocidadeBala = 300.0f;
 
-    // --- Explos√µes ---
+    // --- Explosıes ---
     Explosao explosoes[MAX_EXPLOSOES];
     for (int i=0;i<MAX_EXPLOSOES;i++) explosoes[i].ativa = false;
 
@@ -284,7 +278,6 @@ int main()
         // ESC GLOBAL
         if (IsKeyPressed(KEY_ESCAPE) && telaAtual != TELA_PAUSE && telaAtual != TELA_SAIR_APP)
         {
-            StopSound(somAviao);
             telaAnterior = telaAtual;
             telaAtual = TELA_SAIR_APP;
         }
@@ -324,7 +317,7 @@ int main()
             DrawRectangle(x-6,y-6,w+12,h+12,MIL_BORDER);
             DrawRectangle(x,y,w,h,MIL_DARK);
 
-            DrawTextShadow("RIVER-INF IDENTIFICACAO", x+20, y+18, 24, MIL_ACCENT);
+            DrawTextShadow("RIVER-INF ó IDENTIFICACAO", x+20, y+18, 24, MIL_ACCENT);
             DrawText("Digite seu nome (ENTER para confirmar):", x+20, y+70, 18, LIGHTGRAY);
 
             int bx = x+20, by = y+110, bw = w-40, bh = 40;
@@ -435,12 +428,10 @@ int main()
 
 
         // ============================================================
-        // JOGO (com explos√µes)
+        // JOGO (com explosıes)
         // ============================================================
         case TELA_JOGO:
         {
-        if (!IsSoundPlaying(somAviao))
-        PlaySound(somAviao);
             float dt=GetFrameTime();
             tempoScore+=dt;
             timerTiro += dt;
@@ -470,39 +461,37 @@ int main()
                 break;
             }
 
-            // TIRO segurando espa√ßo (cad√™ncia)
-           if (IsKeyDown(KEY_SPACE) && timerTiro >= cadenciaTiro)
-{
-    for (int i=0; i<MAX_BALAS; i++)
-    {
-        if (!balas[i].ativa)
-        {
-            balas[i].ativa = true;
-            balas[i].x = px + TILE/2.0f - 2;
-            balas[i].y = py - 10;
-            break;
-        }
-    }
-
-    PlaySound(somTiro);   // ‚Üê AQUI
-    timerTiro = 0.0f;
-}
+            // TIRO segurando espaÁo (cadÍncia)
+            if (IsKeyDown(KEY_SPACE) && timerTiro >= cadenciaTiro)
+            {
+                for (int i=0;i<MAX_BALAS;i++)
+                {
+                    if (!balas[i].ativa)
+                    {
+                        balas[i].ativa = true;
+                        balas[i].w = 4;
+                        balas[i].h = 10;
+                        balas[i].x = px + TILE/2.0f - balas[i].w/2.0f;
+                        balas[i].y = py - balas[i].h - 2;
+                        break;
+                    }
+                }
+                timerTiro = 0.0f;
+            }
 
             // Movimento A/D
             if(IsKeyDown(KEY_A))
             {
                 float nx=px-velocidadeLateral;
                 if (nx < 0) nx = 0;
-                if (vaiColidir(mapa, nx, py)) {
-    float ex = px + TILE/2.0f - g_expl_frameW/2.0f;
-    float ey = py + TILE/2.0f - g_expl_spriteH/2.0f;
-
-    criarExplosao(explosoes, MAX_EXPLOSOES, ex, ey, 0.6f, g_expl_totalFrames);
-    PlaySound(somExplosao);     // ‚Üê AQUI
-
-    telaAtual = TELA_FIM;
-    break;
-}
+                if(vaiColidir(mapa,nx,py)) {
+                    // cria explos„o no avi„o (centro do avi„o)
+                    float ex = px + TILE/2.0f - g_expl_frameW/2.0f;
+                    float ey = py + TILE/2.0f - g_expl_spriteH/2.0f;
+                    criarExplosao(explosoes, MAX_EXPLOSOES, ex, ey, 0.6f, g_expl_totalFrames);
+                    telaAtual=TELA_FIM;
+                    break;
+                }
                 else {px=nx; direcao=-1;}
             }
             else if(IsKeyDown(KEY_D))
@@ -535,7 +524,7 @@ int main()
             }
             else py=ny;
 
-            // Combust√≠vel
+            // CombustÌvel
             gasolina -= 5*dt;
             if(gasolina<=0)
             {
@@ -570,7 +559,7 @@ int main()
                 }
             }
 
-            // Pr√≥xima fase
+            // PrÛxima fase
             if(py<=0)
             {
                 score+=1000;
@@ -598,7 +587,7 @@ int main()
                 }
             }
 
-            // Balas: mover e checar colis√µes
+            // Balas: mover e checar colisıes
             for (int i=0;i<MAX_BALAS;i++)
             {
                 if (!balas[i].ativa) continue;
@@ -618,17 +607,16 @@ int main()
                 {
                     char tile = mapa[by_center][bx_center];
                     if (tile == 'N' || tile == 'X' || tile == 'V')
-{
-    float ex = bx_center * TILE + (TILE - g_expl_frameW) / 2.0f;
-    float ey = by_center * TILE + (TILE - g_expl_spriteH) / 2.0f;
+                    {
+                        // cria explos„o no centro do tile (ajusta para centralizar)
+                        float ex = bx_center * TILE + (TILE - g_expl_frameW) / 2.0f;
+                        float ey = by_center * TILE + (TILE - g_expl_spriteH) / 2.0f;
+                        criarExplosao(explosoes, MAX_EXPLOSOES, ex, ey, 1.0f, g_expl_totalFrames);
 
-    criarExplosao(explosoes, MAX_EXPLOSOES, ex, ey, 1.0f, g_expl_totalFrames);
-    PlaySound(somExplosao);   // ‚Üê AQUI
-
-    mapa[by_center][bx_center] = ' ';
-    balas[i].ativa = false;
-    score += 200;
-}
+                        mapa[by_center][bx_center] = ' ';
+                        balas[i].ativa = false;
+                        score += 200;
+                    }
                 }
             }
 
@@ -644,7 +632,7 @@ int main()
 
             DrawTexture(avi,(int)px,(int)py,WHITE);
 
-            // Desenhar explos√µes (sobre mapa; mapa j√° desenha √°gua por padr√£o para espa√ßo)
+            // Desenhar explosıes (sobre mapa; mapa j· desenha ·gua por padr„o para espaÁo)
             for (int i=0;i<MAX_EXPLOSOES;i++){
                 if(!explosoes[i].ativa) continue;
                 int f = explosoes[i].frameAtual;
@@ -655,7 +643,7 @@ int main()
                 DrawTextureRec(explosaoSprite, src, pos, WHITE);
             }
 
-            // Balas (sobre explos√µes)
+            // Balas (sobre explosıes)
             for (int i=0;i<MAX_BALAS;i++)
                 if(balas[i].ativa)
                     DrawRectangle((int)balas[i].x,(int)balas[i].y, (int)balas[i].w, (int)balas[i].h, YELLOW);
@@ -687,7 +675,6 @@ int main()
         // ============================================================
         case TELA_PAUSE:
         {
-            StopSound(somAviao);
             DrawRectangle(0,0,sw,sh, Fade(BLACK,0.5f));
 
             int w = 520, h = 260, x = sw/2 - w/2, y = sh/2 - h/2;
@@ -731,21 +718,11 @@ int main()
         // GAME OVER
         // ============================================================
         case TELA_FIM:
-            StopSound(somAviao);
-{
-    static bool somTocado = false;
-
-    if (!somTocado)
-    {
-        PlaySound(somExplosao);   // ‚Üê toca o som apenas 1 vez
-        somTocado = true;
-    }
+        {
             DrawRectangle(0,0,sw,sh, Fade(BLACK,0.45f));
             int w = 500, h = 220, x = sw/2 - w/2, y = sh/2 - h/2;
             DrawRectangle(x-6,y-6,w+12,h+12, MIL_BORDER);
             DrawRectangle(x,y,w,h, MIL_DARK);
-
-
 
             DrawTextShadow("BOOM! Fim de fase!", x+28, y+24, 28, RED);
             DrawTextShadowFormat(x+28, y+80, 22, LIGHTGRAY, "Score: %d", score);
@@ -753,7 +730,6 @@ int main()
 
             if(IsKeyPressed(KEY_ENTER))
             {
-                somTocado = false;
                 atualizarRanking(ranking,nome,score);
                 salvarRanking(ranking,"ranking.txt");
                 telaAtual=TELA_MENU;
@@ -789,18 +765,8 @@ int main()
         // ============================================================
         // FIM GASOLINA
         // ============================================================
-            case TELA_SEM_GASOLINA:
-                StopSound(somAviao);
-{
-    static bool somTocado = false;
-
-    if (!somTocado)
-    {
-        PlaySound(somExplosao);
-        somTocado = true;
-    }
-
-
+        case TELA_SEM_GASOLINA:
+        {
             DrawRectangle(0,0,sw,sh, Fade(BLACK,0.45f));
             int w = 480, h = 200, x = sw/2 - w/2, y = sh/2 - h/2;
             DrawRectangle(x-6,y-6,w+12,h+12, MIL_BORDER);
@@ -812,7 +778,6 @@ int main()
 
             if(IsKeyPressed(KEY_ENTER))
             {
-                somTocado = false;
                 atualizarRanking(ranking,nome,score);
                 salvarRanking(ranking,"ranking.txt");
                 telaAtual=TELA_MENU;
@@ -878,11 +843,6 @@ int main()
     UnloadTexture(aviao_esquerda);
     UnloadTexture(explosaoSprite);
 
-    UnloadSound(somExplosao);
-    UnloadSound(somAviao);
-    UnloadSound(somTiro);
-
-    CloseAudioDevice();
     CloseWindow();
     return 0;
 }
