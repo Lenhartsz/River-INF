@@ -6,11 +6,11 @@ T   N                TTT
 T            F       TTT
 T            U       TTT
 T            E       TTT
-T        P   L       TTT
+T            L       TTT
 T                    TTT
 T                    TTT
 T                    TTT
-T                    TTT
+T         N          TTT
 T                    TTT
 T                    TTT
 T                    TTT
