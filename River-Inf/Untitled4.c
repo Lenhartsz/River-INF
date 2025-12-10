@@ -3,6 +3,10 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include "raylib.h"
+
+// Macro auxiliar para o calculo de escala
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+
 #define VIRTUAL_W (COLUNAS*TILE)
 #define VIRTUAL_H (LINHAS*TILE)
 #define LINHAS 20
@@ -207,10 +211,21 @@ void criarExplosao(Explosao explosoes[], int maxExpl, float x, float y, float du
 //-----------------------------------------------------
 int main()
 {
-    InitWindow(COLUNAS*TILE, LINHAS*TILE, "River-Inf");
+    // Inicializa a janela com o tamanho VIRTUAL, mas permite redimensionar
+    InitWindow(VIRTUAL_W, VIRTUAL_H, "River-Inf");
+
     SetTargetFPS(60);
     SetExitKey(KEY_NULL);
     InitAudioDevice();
+
+    // --- SISTEMA DE ESCALA (Render Texture) ---
+    // Criamos uma textura do tamanho EXATO do jogo (24 tiles x 20 tiles)
+    RenderTexture2D target = LoadRenderTexture(VIRTUAL_W, VIRTUAL_H);
+    // Filtro POINT para manter o pixel art nítido ao esticar
+    SetTextureFilter(target.texture, TEXTURE_FILTER_POINT);
+
+    // Ativa Fullscreen automaticamente
+    ToggleFullscreen();
 
     Sound somExplosao = LoadSound("sons/explosaosom.wav");
     Sound somAviao    = LoadSound("sons/aviaosom.wav");
@@ -282,7 +297,7 @@ int main()
 
     while(!WindowShouldClose())
     {
-        // ESC GLOBAL
+        // ESC GLOBAL (opção para sair)
         if (IsKeyPressed(KEY_ESCAPE) && telaAtual != TELA_PAUSE && telaAtual != TELA_SAIR_APP)
         {
             StopSound(somAviao);
@@ -290,12 +305,18 @@ int main()
             telaAtual = TELA_SAIR_APP;
         }
 
-        BeginDrawing();
+        // ==============================================================
+        // 1. COMEÇA A DESENHAR NA TEXTURA VIRTUAL (Mundo Pequeno)
+        // ==============================================================
+        BeginTextureMode(target);
         ClearBackground(RAYWHITE);
 
-        int sw = GetScreenWidth();
-        int sh = GetScreenHeight();
+        // IMPORTANTE: Forçamos sw e sh a serem o tamanho do JOGO, não do monitor
+        // Assim sua lógica de centralizar menus funciona perfeita dentro da textura.
+        int sw = VIRTUAL_W;
+        int sh = VIRTUAL_H;
 
+        // --- AQUI COMEÇA SEU SWITCH ORIGINAL (sem alterações lógicas) ---
         switch(telaAtual)
         {
 
@@ -864,10 +885,42 @@ int main()
 
         } // fim switch
 
+        // ==============================================================
+        // 2. FIM DO DESENHO NA TEXTURA VIRTUAL
+        // ==============================================================
+        EndTextureMode();
+
+        // ==============================================================
+        // 3. DESENHO FINAL NA TELA REAL (SCALED)
+        // ==============================================================
+        BeginDrawing();
+        ClearBackground(BLACK); // Faixas pretas nas laterais se não for exato
+
+        int screenW = GetScreenWidth();
+        int screenH = GetScreenHeight();
+
+        // Calcula a escala máxima mantendo a proporção
+        float scale = MIN((float)screenW/VIRTUAL_W, (float)screenH/VIRTUAL_H);
+
+        int drawW = (int)(VIRTUAL_W * scale);
+        int drawH = (int)(VIRTUAL_H * scale);
+        int posX = (screenW - drawW) / 2;
+        int posY = (screenH - drawH) / 2;
+
+        // Desenha a textura virtual escalada no centro da tela
+        // (Nota: a altura da fonte é negativa (-VIRTUAL_H) devido ao sistema de coords do OpenGL)
+        DrawTexturePro(target.texture,
+                       (Rectangle){ 0.0f, 0.0f, (float)VIRTUAL_W, (float)-VIRTUAL_H },
+                       (Rectangle){ (float)posX, (float)posY, (float)drawW, (float)drawH },
+                       (Vector2){ 0, 0 }, 0.0f, WHITE);
+
         EndDrawing();
+
     } // fim loop
 
     // Unload
+    UnloadRenderTexture(target); // Libera a textura virtual
+
     UnloadTexture(ponte);
     UnloadTexture(terra);
     UnloadTexture(agua);
