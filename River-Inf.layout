@@ -2,9 +2,15 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
+<<<<<<< HEAD:River-Inf/River-Inf.layout
 	<File name="Untitled4.c" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="15056" topLine="427" />
+=======
+	<File name="Untitled4.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="29173" topLine="792" />
+>>>>>>> 04b171cc525fa19d4b319a193f38a2d62eb9a7e6:River-Inf.layout
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

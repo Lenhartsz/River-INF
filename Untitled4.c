@@ -1,42 +1,20 @@
 #include <stdio.h>
-
 #include <string.h>
-
 #include <stdlib.h>
-
 #include <stdarg.h>
-
 #include "raylib.h"
 
-
-
-// Macro auxiliar para o calculo de escala
-
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
-
-
+#define MIN(a, b) ((a) < (b) ? (a) : (b)) // marco do futuro, nao mexe nisso, tu nao sabe como funcionou, so viu que funcionou
 
 #define VIRTUAL_W (COLUNAS*TILE)
-
 #define VIRTUAL_H (LINHAS*TILE)
-
 #define LINHAS 20
-
 #define COLUNAS 24
-
 #define TILE 32
-
 #define MAX_RANK 5
-
 #define TOTAL_FASES 5
-
-
-
 #define MAX_BALAS 32
-
 #define MAX_EXPLOSOES 32
-
-
 
 typedef struct
 
@@ -94,7 +72,7 @@ typedef struct {
 
 
 
-// globals para sprite de explosão (configurados em main)
+// global para sprite de explosão
 
 static int g_expl_totalFrames = 0;
 
@@ -102,11 +80,6 @@ static int g_expl_frameW = 0;
 
 static int g_expl_spriteH = 0;
 
-
-
-
-
-// Utility: texto com sombra
 
 static void DrawTextShadow(const char *txt, int x, int y, int size, Color col) {
 
@@ -423,29 +396,13 @@ void criarExplosao(Explosao explosoes[], int maxExpl, float x, float y, float du
 int main()
 
 {
-
-    // Inicializa a janela com o tamanho VIRTUAL, mas permite redimensionar
-
     InitWindow(VIRTUAL_W, VIRTUAL_H, "River-Inf");
-
-
-
     SetTargetFPS(60);
 
     SetExitKey(KEY_NULL);
 
     InitAudioDevice();
-
-
-
-    // --- SISTEMA DE ESCALA (Render Texture) ---
-
-    // Criamos uma textura do tamanho EXATO do jogo (24 tiles x 20 tiles)
-
     RenderTexture2D target = LoadRenderTexture(VIRTUAL_W, VIRTUAL_H);
-
-    // Filtro POINT para manter o pixel art nítido ao esticar
-
     SetTextureFilter(target.texture, TEXTURE_FILTER_POINT);
 
 
@@ -534,7 +491,7 @@ int main()
 
 
 
-    // explosão sprite (sprite sheet horizontal)
+    // explosão sprite
 
     Texture2D explosaoSprite = LoadTexture("sprites/explosion.png");
 
@@ -545,8 +502,6 @@ int main()
     g_expl_frameW = (int)(explosaoSprite.width / g_expl_totalFrames);
 
     g_expl_spriteH = explosaoSprite.height;
-
-
 
     // --- Balas ---
 
@@ -560,8 +515,6 @@ int main()
 
     float velocidadeBala = 300.0f;
 
-
-
     // --- Explosões ---
 
     Explosao explosoes[MAX_EXPLOSOES];
@@ -570,23 +523,23 @@ int main()
 
 
 
-    // Paleta "militar"
+
 
     Color MIL_OLIVE = (Color){89, 99, 71, 255};
 
     Color MIL_DARK = (Color){40, 45, 36, 255};
 
-    Color MIL_ACCENT = (Color){209, 167, 81, 255}; // amarelo-militar
+    Color MIL_ACCENT = (Color){209, 167, 81, 255}; // <--- amarelo   (guarde deus)
 
     Color MIL_BORDER = (Color){30, 30, 25, 255};
 
 
 
-    //-----------------------------------------------------
+
 
     // LOOP PRINCIPAL
 
-    //-----------------------------------------------------
+
 
     timerTiro = cadenciaTiro; // permite tiro imediato se quiser
 
@@ -612,30 +565,16 @@ int main()
 
 
 
-        // ==============================================================
 
-        // 1. COMEÇA A DESENHAR NA TEXTURA VIRTUAL (Mundo Pequeno)
+        //  TEXTURA VIRTUAL
 
-        // ==============================================================
 
         BeginTextureMode(target);
 
         ClearBackground(RAYWHITE);
-
-
-
-        // IMPORTANTE: Forçamos sw e sh a serem o tamanho do JOGO, não do monitor
-
-        // Assim sua lógica de centralizar menus funciona perfeita dentro da textura.
-
         int sw = VIRTUAL_W;
 
         int sh = VIRTUAL_H;
-
-
-
-        // --- AQUI COMEÇA SEU SWITCH ORIGINAL (sem alterações lógicas) ---
-
         switch(telaAtual)
 
         {
@@ -767,9 +706,6 @@ int main()
 
 
                     if (!carregarMapa(mapa, nomeFase)) {
-
-                        // se falhar, inicializa mapa vazio
-
                         for (int r=0;r<LINHAS;r++) {
 
                             for (int c=0;c<COLUNAS;c++) mapa[r][c] = ' ';
@@ -1360,7 +1296,7 @@ int main()
 
 
 
-            // Balas (sobre explosões)
+            // Balas (explosões)
 
             for (int i=0;i<MAX_BALAS;i++)
 
@@ -1370,7 +1306,7 @@ int main()
 
 
 
-            // HUD militar (barra + score)
+            // HUD
 
             int hudX = 12;
 
@@ -1754,13 +1690,13 @@ int main()
 
 
 
-        } // fim switch
+        }
 
 
 
         // ==============================================================
 
-        // 2. FIM DO DESENHO NA TEXTURA VIRTUAL
+        //  FIM DO DESENHO NA TEXTURA VIRTUAL
 
         // ==============================================================
 
@@ -1770,9 +1706,9 @@ int main()
 
         // ==============================================================
 
-        // 3. DESENHO FINAL NA TELA REAL (SCALED)
+        //  DESENHO FINAL NA TELA REAL (SCALED)
 
-        // ==============================================================
+
 
         BeginDrawing();
 
@@ -1786,7 +1722,7 @@ int main()
 
 
 
-        // Calcula a escala máxima mantendo a proporção
+        // Calcula a escala máxima e mantem a proporção
 
         float scale = MIN((float)screenW/VIRTUAL_W, (float)screenH/VIRTUAL_H);
 
@@ -1802,9 +1738,6 @@ int main()
 
 
 
-        // Desenha a textura virtual escalada no centro da tela
-
-        // (Nota: a altura da fonte é negativa (-VIRTUAL_H) devido ao sistema de coords do OpenGL)
 
         DrawTexturePro(target.texture,
 
@@ -1822,52 +1755,24 @@ int main()
 
     } // fim loop
 
-
-
-    // Unload
-
     UnloadRenderTexture(target); // Libera a textura virtual
-
-
-
     UnloadTexture(ponte);
-
     UnloadTexture(terra);
-
     UnloadTexture(agua);
-
     UnloadTexture(navio);
-
     UnloadTexture(fuelF);
-
     UnloadTexture(fuelU);
-
     UnloadTexture(fuelE);
-
     UnloadTexture(fuelL);
-
     UnloadTexture(helicoptero);
-
     UnloadTexture(aviao_parado);
-
     UnloadTexture(aviao_direita);
-
     UnloadTexture(aviao_esquerda);
-
     UnloadTexture(explosaoSprite);
-
-
-
     UnloadSound(somExplosao);
-
     UnloadSound(somAviao);
-
     UnloadSound(somTiro);
-
-
-
     CloseAudioDevice();
-
     CloseWindow();
 
     return 0;
