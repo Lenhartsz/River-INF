@@ -1,0 +1,20 @@
+TTTTT            TTTTTTT
+T                    TTT
+T      X             TTT
+T               N    TTT
+T   N               TTTT
+T           X      TTTTT
+T                 TTPTTT
+T  F             TTTPTTT
+T  U              TPPTTT
+T  E               TPTTT
+T  L                TTTT
+T               N    TTT
+T                    TTT
+T    X               TTT
+T                    TTT
+T                    TTT
+T                    TTT
+T                    TTT
+T        A           TTT
+T                    TTT

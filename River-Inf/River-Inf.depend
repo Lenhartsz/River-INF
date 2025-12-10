@@ -1,8 +1,15 @@
 # depslib dependency file v1.0
-1760915815 source:d:\riverinf\river-inf\river-inf\untitled4.c
-	"raylib.h"
+1764918816 source:d:\riverinf\river-inf\river-inf\untitled4.c
+	<stdio.h>
+	<string.h>
 	<stdlib.h>
+	<stdarg.h>
+	"raylib.h"
 
 1760913030 source:d:\riverinf\river-inf\river-inf\test.c
 	"raylib.h"
+
+1763504384 c:\raylib\w64devkit\include\raylib.h
+	<stdarg.h>
+	<stdbool.h>
 
