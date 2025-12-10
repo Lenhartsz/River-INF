@@ -4,8 +4,7 @@
 #include <stdarg.h>
 #include "raylib.h"
 
-// Macro auxiliar para o calculo de escala
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
+#define MIN(a, b) ((a) < (b) ? (a) : (b))// ajuda no redimensionamento, meudeus, foi a unica forma que achei de fazer isso
 
 #define VIRTUAL_W (COLUNAS*TILE)
 #define VIRTUAL_H (LINHAS*TILE)
@@ -46,13 +45,12 @@ typedef struct {
 } Explosao;
 
 
-// globals para sprite de explosão (configurados em main)
+// globals para sprite de explosão
 static int g_expl_totalFrames = 0;
 static int g_expl_frameW = 0;
 static int g_expl_spriteH = 0;
 
 
-// Utility: texto com sombra
 static void DrawTextShadow(const char *txt, int x, int y, int size, Color col) {
     DrawText(txt, x+2, y+2, size, BLACK);
     DrawText(txt, x, y, size, col);
@@ -219,12 +217,12 @@ int main()
     InitAudioDevice();
 
     // --- SISTEMA DE ESCALA (Render Texture) ---
-    // Criamos uma textura do tamanho EXATO do jogo (24 tiles x 20 tiles)
+        // textura do game mesmo
     RenderTexture2D target = LoadRenderTexture(VIRTUAL_W, VIRTUAL_H);
-    // Filtro POINT para manter o pixel art nítido ao esticar
+    // aqui nao estica, so mantem a proprocao em telas maiores
     SetTextureFilter(target.texture, TEXTURE_FILTER_POINT);
 
-    // Ativa Fullscreen automaticamente
+    // A tela maior kkk
     ToggleFullscreen();
 
     Sound somExplosao = LoadSound("sons/explosaosom.wav");
@@ -266,9 +264,9 @@ int main()
     Texture2D aviao_direita = LoadTexture("sprites/aviao_direita.png");
     Texture2D aviao_esquerda= LoadTexture("sprites/aviao_esquerda.png");
 
-    // explosão sprite (sprite sheet horizontal)
+    // explosão sprite
     Texture2D explosaoSprite = LoadTexture("sprites/explosion.png");
-    g_expl_totalFrames = 8; // ajuste caso sua sprite tenha outro número de frames
+    g_expl_totalFrames = 8;
     if (g_expl_totalFrames <= 0) g_expl_totalFrames = 1;
     g_expl_frameW = (int)(explosaoSprite.width / g_expl_totalFrames);
     g_expl_spriteH = explosaoSprite.height;
@@ -287,13 +285,13 @@ int main()
     // Paleta "militar"
     Color MIL_OLIVE = (Color){89, 99, 71, 255};
     Color MIL_DARK = (Color){40, 45, 36, 255};
-    Color MIL_ACCENT = (Color){209, 167, 81, 255}; // amarelo-militar
+    Color MIL_ACCENT = (Color){209, 167, 81, 255}; // <--- AMARELO           // tomei sufoco procurando isso denovo
     Color MIL_BORDER = (Color){30, 30, 25, 255};
 
     //-----------------------------------------------------
     // LOOP PRINCIPAL
     //-----------------------------------------------------
-    timerTiro = cadenciaTiro; // permite tiro imediato se quiser
+    timerTiro = cadenciaTiro;
 
     while(!WindowShouldClose())
     {
@@ -305,21 +303,13 @@ int main()
             telaAtual = TELA_SAIR_APP;
         }
 
-        // ==============================================================
         // 1. COMEÇA A DESENHAR NA TEXTURA VIRTUAL (Mundo Pequeno)
-        // ==============================================================
         BeginTextureMode(target);
         ClearBackground(RAYWHITE);
-
-        // IMPORTANTE: Forçamos sw e sh a serem o tamanho do JOGO, não do monitor
-        // Assim sua lógica de centralizar menus funciona perfeita dentro da textura.
         int sw = VIRTUAL_W;
         int sh = VIRTUAL_H;
-
-        // --- AQUI COMEÇA SEU SWITCH ORIGINAL (sem alterações lógicas) ---
         switch(telaAtual)
         {
-
         // ============================================================
         // TELA_NOME
         // ============================================================
@@ -383,7 +373,6 @@ int main()
                     sprintf(nomeFase, "mapas/fase%d.txt", faseAtual);
 
                     if (!carregarMapa(mapa, nomeFase)) {
-                        // se falhar, inicializa mapa vazio
                         for (int r=0;r<LINHAS;r++) {
                             for (int c=0;c<COLUNAS;c++) mapa[r][c] = ' ';
                             mapa[r][COLUNAS]='\0';
@@ -679,12 +668,12 @@ int main()
                 DrawTextureRec(explosaoSprite, src, pos, WHITE);
             }
 
-            // Balas (sobre explosões)
+            // Balas (explosões)
             for (int i=0;i<MAX_BALAS;i++)
                 if(balas[i].ativa)
                     DrawRectangle((int)balas[i].x,(int)balas[i].y, (int)balas[i].w, (int)balas[i].h, YELLOW);
 
-            // HUD militar (barra + score)
+            // HUD
             int hudX = 12;
             int hudY = 10;
             int hudW = 220, hudH = 26;
@@ -885,16 +874,16 @@ int main()
 
         } // fim switch
 
-        // ==============================================================
-        // 2. FIM DO DESENHO NA TEXTURA VIRTUAL
-        // ==============================================================
+        //
+        //  FIM DO DESENHO NA TEXTURA VIRTUAL
+        //
         EndTextureMode();
 
-        // ==============================================================
-        // 3. DESENHO FINAL NA TELA REAL (SCALED)
-        // ==============================================================
+
+        //  DESENHO FINAL NA TELA REAL
+
         BeginDrawing();
-        ClearBackground(BLACK); // Faixas pretas nas laterais se não for exato
+        ClearBackground(BLACK); // Faixas pretas nas laterais se não for exato (nunca vai serkkkkkkkkkkkkkkkkkkkkkkkkkk)
 
         int screenW = GetScreenWidth();
         int screenH = GetScreenHeight();
