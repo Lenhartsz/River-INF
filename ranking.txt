@@ -1,5 +1,13 @@
+<<<<<<< HEAD:River-Inf/ranking.txt
+Bernardo 8430
+Lenhart 1690
+Pele 0
+da 80
+Silva 8340
+=======
 Andreinha 7540
 kalebson 4800
 lenhart 1800
 eads 1720
 Lenhart 240
+>>>>>>> 04b171cc525fa19d4b319a193f38a2d62eb9a7e6:ranking.txt

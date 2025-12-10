@@ -16,5 +16,5 @@ T                    TTT
 T                    TTT
 T                    TTT
 T                    TTT
-T        A           TTT
+T         A          TTT
 T                    TTT
